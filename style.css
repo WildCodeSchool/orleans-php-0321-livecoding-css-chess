@@ -1,11 +1,12 @@
 :root {
-    --size: 50px;
-    --hue: 30;
+    --size: 40px;
 }
 
 body {
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
     perspective: 1000px;
 }
 
@@ -18,10 +19,14 @@ body {
     transform: rotateX(var(--chessboard-inclination, 0deg))  rotateZ(var(--chessboard-rotation, 0deg));
     transition: 1s ease-in-out;
     transform-style: preserve-3d;
+    width: min-content;
+}
+
+* {
+    --main-color: hsl(var(--hue, 30), 50%, calc(var(--lightness, 50%) + var(--lightness-modifier, 0%)));
 }
 
 .chessboard div {
-    --main-color: hsl(var(--hue), 50%, calc(var(--lightness, 50%) + var(--lightness-modifier, 0%)));
     background-color: var(--main-color);
     display: flex;
     justify-content: center;
@@ -61,7 +66,7 @@ body {
     --lightness-modifier:10%;
 }
 
-input[type="checkbox"] {
+input {
     display: none;
 }
 
@@ -79,4 +84,119 @@ input[type="checkbox"]:checked + label {
     --translation-piece: calc(var(--size) / -2); 
 }
 
+/** CLOCK */
 
+.chessclock {
+    --clock-width: 500px;
+    --clock-height: calc(var(--clock-width) /2);
+    --main-color: hsl(var(--hue), 50%, calc(var(--lightness, 50%) + var(--lightness-modifier, 0%)));
+    margin-top: calc(var(--clock-width) / 10);
+    background-color: var(--main-color);
+    width: var(--clock-width);
+    height: var(--clock-height);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+}
+
+.clock {
+    border-radius: 50%;
+    --diameter: calc(var(--clock-height) - 20px);
+    width: var(--diameter);
+    height: var(--diameter);
+    background-color: white;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clock::before {
+    content: '';
+    width: calc(var(--diameter) - 20px);
+    height: calc(var(--diameter) - 20px);
+    background-color: inherit;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+.tick {
+    top: calc(var(--diameter) / 2);
+    position: absolute;
+    width: var(--diameter);
+    height: 2px;
+    background-color: red;
+    rotate: var(--tick-rotate, calc(30deg * var(--tick-position)));
+}
+
+.needle {  
+    width: calc(var(--diameter) / 2);
+    right: 0;
+    background-color: black;
+    z-index: 2;
+    transform-origin: left;
+    animation: needle-rotation 60s steps(60, end) infinite;
+    animation-play-state: paused;
+}
+
+.clock-radio:checked + label + .clock .needle {
+    animation-play-state: running;
+}
+
+@keyframes needle-rotation {
+    0% { rotate: -90deg; }
+    100% { rotate: 270deg; }
+}
+
+.tick:nth-child(1) {
+    --tick-position:1;
+}
+
+.tick:nth-child(2) {
+    --tick-position:2;
+}
+.tick:nth-child(3) {
+    --tick-position:3;
+}
+.tick:nth-child(4) {
+    --tick-position:4;
+}
+.tick:nth-child(5) {
+    --tick-position:5;
+}
+.tick:nth-child(6) {
+    --tick-position:6;
+}
+
+.clock-push {
+    --push-height: 12px;
+    --push-width: 15px;
+    width: var(--push-width);
+    height: var(--push-height);
+    background-color: rgb(226, 190, 72);
+    position: absolute;
+    top: calc(var(--push-height) * -1);
+    cursor: pointer;
+}
+
+.clock-push::before {
+    content:'';
+    position: absolute;
+    top:0;
+    left:-7.5px;
+    width: 30px;
+    height: 10px;
+    background-color: inherit;
+}
+
+.clock-push:nth-of-type(1) {
+    left: calc((var(--clock-width) - (var(--push-width) * 2 )) / 4 );
+}
+.clock-push:nth-of-type(2) {
+    right: calc((var(--clock-width) - (var(--push-width) * 2 )) / 4 );
+}
+
+.clock-radio:checked + .clock-push {
+    --push-height:25px;
+}
